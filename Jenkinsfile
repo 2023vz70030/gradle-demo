@@ -14,15 +14,19 @@ stage('Build & Test') {
     }
 }
 stage('SonarQube Analysis') {
-    environment {
-        SONAR_TOKEN = credentials('sonar-token')
-    }
     steps {
-        withSonarQubeEnv('SonarQube') {
-            sh './gradlew sonar'
+        withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+            withSonarQubeEnv('SonarQube') {
+                sh """
+                chmod +x gradlew
+                ./gradlew sonar \
+                  -Dsonar.login=$SONAR_TOKEN
+                """
+            }
         }
     }
 }
+
 
 
         stage('Archive Artifact') {
