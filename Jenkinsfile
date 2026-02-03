@@ -8,16 +8,22 @@ pipeline {
             }
         }
        
-        stage('Set Gradle Wrapper Executable') {
+stage('Build & Test') {
             steps {
-                sh 'chmod +x gradlew'
+                sh 'gradle clean test'
             }
         }
 
-        stage('Build & Test') {
+        stage('SonarQube Analysis') {
             steps {
-                // Use Gradle wrapper (gradlew) in your repo
-                sh './gradlew clean build test jacocoTestReport'
+                withSonarQubeEnv('SonarQube') {
+                    sh '''
+                    gradle sonarqube \
+                    -Dsonar.projectKey=gradle-demo \
+                    -Dsonar.host.url=http://localhost:9000 \
+                    -Dsonar.login=<SONAR_TOKEN>
+                    '''
+                }
             }
         }
 
@@ -28,9 +34,4 @@ pipeline {
         }
     }
 
-    post {
-        always {
-            junit '**/build/test-results/test/*.xml'
-        }
-    }
 }
