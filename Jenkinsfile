@@ -7,12 +7,12 @@ pipeline {
                 checkout scm
             }
         }
-       
-stage('Build & Test') {
-            steps {
-                sh 'gradle clean test'
-            }
+           
+    stage('Build & Test') {
+        steps {
+            sh './gradlew clean test'
         }
+    }
 
         stage('SonarQube Analysis') {
             steps {
