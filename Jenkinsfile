@@ -6,6 +6,12 @@ pipeline {
                 checkout scm // Pulls code from GitHub
             }
         }
+
+ 	stage('Set Gradle Wrapper Executable') {
+            steps {
+                sh 'chmod +x gradlew'
+            }
+        }
         stage('Build & Test') {
             steps {
                 sh './gradlew clean test' // Runs Gradle build
