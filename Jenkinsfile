@@ -14,11 +14,13 @@ stage('Build & Test') {
     }
 }
 
-    stage('SonarQube Analysis') {
+  stage('SonarQube Analysis') {
+    environment {
+        SONAR_TOKEN = credentials('sonar-token')
+    }
     steps {
         withSonarQubeEnv('SonarQube') {
-            sh 'chmod +x gradlew'
-            sh './gradlew sonarqube'
+            sh './gradlew sonar -Dsonar.login=$SONAR_TOKEN'
         }
     }
 }
