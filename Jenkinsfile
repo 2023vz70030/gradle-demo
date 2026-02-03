@@ -7,25 +7,21 @@ pipeline {
                 checkout scm
             }
         }
-           
-    stage('Build & Test') {
-        steps {
-            sh './gradlew clean test'
+stage('Build & Test') {
+    steps {
+        sh 'chmod +x gradlew'
+        sh './gradlew clean test'
+    }
+}
+
+    stage('SonarQube Analysis') {
+    steps {
+        withSonarQubeEnv('SonarQube') {
+            sh 'chmod +x gradlew'
+            sh './gradlew sonarqube'
         }
     }
-
-        stage('SonarQube Analysis') {
-            steps {
-                withSonarQubeEnv('SonarQube') {
-                    sh '''
-                    gradle sonarqube \
-                    -Dsonar.projectKey=gradle-demo \
-                    -Dsonar.host.url=http://localhost:9000 \
-                    -Dsonar.login=<SONAR_TOKEN>
-                    '''
-                }
-            }
-        }
+}
 
         stage('Archive Artifact') {
             steps {
