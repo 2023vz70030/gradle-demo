@@ -37,3 +37,6 @@ sonarqube {
         property "sonar.projectName", "gradle-demo"
     }
 }
+tasks.named("sonarqube") {
+    dependsOn test
+}
